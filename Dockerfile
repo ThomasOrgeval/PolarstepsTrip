@@ -1,6 +1,6 @@
 FROM node:22
 
-workdir /app
+WORKDIR /usr/src/app
 
 # Install dependencies
 COPY package*.json ./
