@@ -1,0 +1,38 @@
+services:
+  traefik:
+    image: traefik:3
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=mail@mail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - letsencrypt:/letsencrypt
+
+  polarsteps:
+    image: ghcr.io/thomasorgeval/polarstepstrip:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.trip.rule=Host(`trip.thomasorgeval.com`)"
+      - "traefik.http.routers.trip.entrypoints=websecure"
+      - "traefik.http.routers.trip.tls.certresolver=myresolver"
+      # Ajout du middleware de redirection
+      - "traefik.http.middlewares.redirect-to-polarsteps.redirectregex.regex=^https://trip.thomasorgeval.com(/)?$"
+      - "traefik.http.middlewares.redirect-to-polarsteps.redirectregex.replacement=https://trip.thomasorgeval.com/polarsteps/ThomasOrgeval"
+      - "traefik.http.middlewares.redirect-to-polarsteps.redirectregex.permanent=true"
+      # Application du middleware au router
+      - "traefik.http.routers.trip.middlewares=redirect-to-polarsteps"
+    restart: unless-stopped
+    depends_on:
+      - traefik

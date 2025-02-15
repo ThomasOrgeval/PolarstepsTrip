@@ -1,4 +1,10 @@
 {
+  "name": "polarsteps-trip",
+  "author": "Thomas Orgeval",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "fastify": "^5.2.1"
   }
