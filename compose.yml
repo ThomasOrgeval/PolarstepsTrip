@@ -36,3 +36,6 @@ services:
     restart: unless-stopped
     depends_on:
       - traefik
+
+volumes:
+  letsencrypt:
