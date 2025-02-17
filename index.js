@@ -37,7 +37,8 @@ fastify.get('/polarsteps/:username', async (req, reply) => {
 fastify.get('/users/byusername/:username', async (req, reply) => {
   const username = req.params.username;
   const response = await fetch(`${API_URL}/users/byusername/${username}`);
-  return await response.json();
+  reply.header('Access-Control-Allow-Origin', '*');
+  return reply.send(await response.json());
 })
 
 fastify.listen({port: 3000, host: '0.0.0.0'}, (err, address) => {
