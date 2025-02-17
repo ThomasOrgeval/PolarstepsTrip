@@ -34,6 +34,12 @@ fastify.get('/polarsteps/:username', async (req, reply) => {
   reply.redirect(`https://www.polarsteps.com/${username}`);
 });
 
+fastify.get('/users/byusername/:username', async (req, reply) => {
+  const username = req.params.username;
+  const response = await fetch(`${API_URL}/users/byusername/${username}`);
+  return await response.json();
+})
+
 fastify.listen({port: 3000, host: '0.0.0.0'}, (err, address) => {
   if (err) {
     fastify.log.error(err);
