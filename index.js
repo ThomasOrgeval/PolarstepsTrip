@@ -17,7 +17,7 @@ fastify.get('/polarsteps/:username', async (req, reply) => {
   const now = Math.floor(Date.now() / 1000);
 
   // Classer les voyages
-  const currentTrip = trips.find(t => t.start_date <= now && t.end_date >= now);
+  const currentTrip = trips.find(t => t.start_date <= now && (t.end_date >= now || t.end_date === null));
   const futureTrips = trips.filter(t => t.start_date > now).sort((a, b) => a.start_date - b.start_date);
   const pastTrips = trips.filter(t => t.end_date < now).sort((a, b) => b.end_date - a.end_date);
 
